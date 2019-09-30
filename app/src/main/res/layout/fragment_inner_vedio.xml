@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <!--<include-->
+        <!--android:id="@+id/id_ly_bottombar"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="55dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--layout="@layout/topbar" />-->
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/id_content"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1">-->
+    <!--</FrameLayout>-->
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/top_tab_height"
+        android:background="@color/main_top_color" >
+
+        <TextView
+            android:id="@+id/picture_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="@string/picture"
+            android:textStyle="bold"
+            android:textColor="@color/main_top_tab_color"
+            android:textSize="@dimen/main_top_tab_text_size" />
+
+        <TextView
+            android:id="@+id/movie_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="@string/movie"
+            android:textStyle="bold"
+            android:textColor="@color/main_top_tab_color"
+            android:textSize="@dimen/main_top_tab_text_size" />
+
+        <TextView
+            android:id="@+id/music_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="@string/music"
+            android:textStyle="bold"
+            android:textColor="@color/main_top_tab_color"
+            android:textSize="@dimen/main_top_tab_text_size" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_line_height"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="@color/main_top_color"
+        >
+
+        <ImageView
+            android:id="@+id/cursor"
+            android:layout_width="@dimen/main_matrix_width"
+            android:layout_height="@dimen/main_line_height"
+            android:scaleType="matrix"
+            android:src="@color/matrix_color" />
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/main_top_color"/>
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vPager"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1.0"
+        android:background="@color/white"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" />
+
+
+</LinearLayout>
