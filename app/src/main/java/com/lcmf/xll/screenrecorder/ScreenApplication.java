@@ -1,9 +1,11 @@
 package com.lcmf.xll.screenrecorder;
 
 import android.app.Application;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 
 import com.lcmf.xll.screenrecorder.SceenShot.RecordService;
 
@@ -24,7 +26,14 @@ public class ScreenApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		// 启动 Marvel service
-		startService(new Intent(this, RecordService.class));
+		Intent intent = new Intent(this, RecordService.class);
+		//startService(new Intent(this, RecordService.class));
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			//startForeground(1,new Notification());
+			startForegroundService(intent);
+		} else {
+			startService(intent);
+		}
 	}
 
 	public static ScreenApplication getInstance() {

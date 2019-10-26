@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
@@ -70,28 +71,34 @@ public class ScreenService extends Service {
 		private int mScreenDensity = 0;
 
 		@Override
-		public void onCreate()
-		{
+		public void onCreate(){
 			// TODO Auto-generated method stub
 			super.onCreate();
-
 			createFloatView();
-
 			createVirtualEnvironment();
 		}
 
 		@Override
-		public IBinder onBind(Intent intent)
-		{
+		public IBinder onBind(Intent intent){
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		private void createFloatView()
-		{
+		private void createFloatView(){
 			wmParams = new WindowManager.LayoutParams();
 			mWindowManager = (WindowManager)getApplication().getSystemService(getApplication().WINDOW_SERVICE);
-			wmParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+
+			if(Build.VERSION.SDK_INT >= 26 && getApplicationContext().getApplicationInfo().targetSdkVersion > 22){
+				wmParams.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
+			}else{
+				PackageManager pm = getApplicationContext().getPackageManager();
+				boolean permission = (PackageManager.PERMISSION_GRANTED == pm.checkPermission("android.permission.SYSTEM_ALERT_WINDOW", getApplicationContext().getPackageName()));
+				if(permission || "oneplus".equals(Build.MANUFACTURER)){
+					wmParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+				}else{
+					wmParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+				}
+			}
 			wmParams.format = PixelFormat.RGBA_8888;
 			wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 			wmParams.gravity = Gravity.LEFT | Gravity.TOP;
@@ -101,11 +108,11 @@ public class ScreenService extends Service {
 			wmParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
 			inflater = LayoutInflater.from(getApplication());
 			mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout, null);
+
 			mWindowManager.addView(mFloatLayout, wmParams);
 			mFloatView = (ImageButton)mFloatLayout.findViewById(R.id.float_id);
 
-			mFloatLayout.measure(View.MeasureSpec.makeMeasureSpec(0,
-					View.MeasureSpec.UNSPECIFIED), View.MeasureSpec
+			mFloatLayout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec
 					.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
 
 			mFloatView.setOnTouchListener(new View.OnTouchListener() {

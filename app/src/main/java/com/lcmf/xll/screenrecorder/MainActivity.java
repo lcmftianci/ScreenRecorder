@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -14,6 +15,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	* */
 
 	//定义notification实用的ID
-	private static final int NO_CHICKEN =0x3;
+	private static final int NO_CHICKEN = 0x3;
 	//主页内容成员
 	FragmentManager manager;
 	FragmentTransaction transaction;
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	NotificationManager mNotificationManager;
 	private static boolean bRecoded = false;
 
-	private Intent intent = null;
+	private Intent gIntent = null;
 	private int result = 0;
 
 	//fragment界面切换
@@ -246,9 +248,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	//截屏服务
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	private void startIntent(){
-		if(intent != null && result != 0){
+		if(gIntent != null && result != 0){
 			((ScreenApplication)getApplication()).setResult(result);
-			((ScreenApplication)getApplication()).setIntent(intent);
+			((ScreenApplication)getApplication()).setIntent(gIntent);
 			Intent intent = new Intent(getApplicationContext(), ScreenService.class);
 			showTips("启动服务");
 			startService(intent);
@@ -335,7 +337,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private void notification() {
 		unregeisterReceiver();
 		intiReceiver();
-
 		remoteViews = new RemoteViews(getPackageName(), R.layout.notification);
 		remoteViews.setTextViewText(R.id.tv_up, "录屏精灵");
 		remoteViews.setTextViewText(R.id.tv_down, "通知栏控制");
@@ -379,12 +380,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		mBuilder.setTicker("录屏精灵");
 		mBuilder.setSmallIcon(R.drawable.id_airport);
 
-		Notification notification = mBuilder.build();
-		notification.flags = Notification.FLAG_ONGOING_EVENT;
-		notification.contentIntent = intentContent;
-
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(NO_CHICKEN, notification);
+		if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+			//NotificationCompat.Builder build =new NotificationCompat.Builder(context, channelId);
+//			String channelId = "1";
+//			NotificationChannel channel = new NotificationChannel(channelId, "Channel1", NotificationManager.IMPORTANCE_DEFAULT);
+//			channel.enableLights(true); //是否在桌面icon右上角展示小红点
+//			channel.setLightColor(Color.RED); //小红点颜色
+//			channel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
+//			mNotificationManager.createNotificationChannel(channel);
+			Notification notification = mBuilder.build();
+			notification.flags = Notification.FLAG_ONGOING_EVENT;
+			notification.contentIntent = intentContent;
+			NotificationManager mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.notify(NO_CHICKEN, notification);
+		}else{
+			Notification notification = mBuilder.build();
+			notification.flags = Notification.FLAG_ONGOING_EVENT;
+			notification.contentIntent = intentContent;
+			NotificationManager mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.notify(NO_CHICKEN, notification);
+		}
 	}
 	private void intiReceiver() {
 		mReceiver = new NotificationBroadcastReceiver();
@@ -454,6 +469,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		if (!Settings.canDrawOverlays(MainActivity.this)) {
 			Toast.makeText(this, "can not DrawOverlays", Toast.LENGTH_SHORT).show();
 			Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + MainActivity.this.getPackageName()));
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
 		} else {
 			// Already hold the SYSTEM_ALERT_WINDOW permission, do addview or something.
@@ -481,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //			}else if(data != null && resultCode != 0){
 			if(data != null && resultCode != 0){
 				result = resultCode;
-				intent = data;
+				gIntent = data;
 				((ScreenApplication)getApplication()).setResult(resultCode);
 				((ScreenApplication)getApplication()).setIntent(data);
 				Intent intent = new Intent(getApplicationContext(), ScreenService.class);
