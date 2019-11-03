@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="开启你的心"
+            android:text="录屏精灵"
             android:textColor="#b3ffffff"
             android:textSize="20sp" />
     </LinearLayout>
@@ -48,7 +48,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="17dp"
         android:gravity="center_horizontal"
-        android:text="凌晨沐风"
+        android:text="盘古科技"
         android:textColor="#b3ffffff"
         android:textSize="12sp" />
 
