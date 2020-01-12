@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import java.util.Random;
 
-public class SplashActivity extends Activity {
+public class StartActivity extends Activity {
     private final String TAG = "---SplashActivity---";
 
     //加载三个动画
@@ -123,7 +123,7 @@ public class SplashActivity extends Activity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                Intent intent = new Intent(StartActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
